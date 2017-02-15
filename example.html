@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API</title>
+    <script src="sha1.min.js"></script>
+</head>
+<body>
+<h1>API Example (only)</h1>
+
+<p>Do open console to see request/response (F12)</p>
+
+<script>
+
+    // This code for example only
+    const secret = 'secret'; // don't use secret in public code
+    const partnerId = 123456;
+
+    const request = {
+        partnerId,
+        arrayOfNumbers: [1, 2, 3],
+        arrayOfObjects: [{foo: 'foo'}, {bar: 'bar'}],
+        string: 'hello',
+        bool: true
+    };
+
+    const requestBody = JSON.stringify(request);
+    const promise = fetch('./entrypoint.php', {
+        method: 'POST',
+        body: requestBody,
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Api-Signature': sha1(secret + requestBody)
+        }
+    });
+
+    promise.then(response => {
+        return response.json();
+    })
+        .then(data => {
+            console.log(data);
+        });
+
+</script>
+</body>
+</html>
