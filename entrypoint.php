@@ -30,7 +30,7 @@ try {
     $partnerId = $input['partner_id'];
     $secret = 'secret'; // Secret should be unique by partner
 
-    if (false === sha1($secret . $rawPostData)) {
+    if ($xApiSignature !== sha1($secret . $rawPostData)) {
         throw new Exception('Invalid signature');
     }
 
