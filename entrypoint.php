@@ -1,5 +1,10 @@
 <?php
 
+// Simulate db records for partners secrets where index is partner_id and value is secret.
+$db = array(
+    123456 => 'secret' // Secret should be unique by partner
+);
+
 try {
     // Response object
     $response = array();
@@ -26,9 +31,14 @@ try {
 
     $input = json_decode($rawPostData, true);
 
+    $partnerId = $input['partnerId'];
+
     // Check the credentials
-    $partnerId = $input['partner_id'];
-    $secret = 'secret'; // Secret should be unique by partner
+    if (!array_key_exists($partnerId, $db)) {
+        throw  new Exception('Partner was not found');
+    }
+
+    $secret = $db[$partnerId];
 
     if ($xApiSignature !== sha1($secret . $rawPostData)) {
         throw new Exception('Invalid signature');
